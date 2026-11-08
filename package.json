@@ -1,0 +1,7 @@
+﻿{
+  "name": "psygame",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  }
+}

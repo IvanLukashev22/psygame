@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+
+<html lang="ru"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&amp;family=Onest:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><title>PSYGAME — Трансформационные психологические игры Анны Орловой</title>
+<meta name="description" content="Трансформационные игры, которые помогают увидеть ситуацию под новым углом. Авторская методика Анны Орловой. Онлайн и офлайн."/>
+<style>
+@layer base{html,body{margin:0;padding:0;}html{scroll-behavior:smooth;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:#09090B;}
+::-webkit-scrollbar-track{background:#F8F4E8;}
+.border-3{border-width:3px;}
+.border-l-3{border-left-width:3px;}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.animate-marquee{animation:marquee 28s linear infinite;}
+#mobile-menu.open{display:flex;}
+.material-symbols-outlined{
+  font-family:'Material Symbols Outlined',sans-serif;
+  font-weight:normal;
+  font-style:normal;
+  font-size:1.25em;
+  line-height:1;
+  letter-spacing:normal;
+  text-transform:none;
+  display:inline-block;
+  white-space:nowrap;
+  word-wrap:normal;
+  direction:ltr;
+  font-variation-settings:'FILL' 0,'wght' 600,'GRAD' 0,'opsz' 24;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ——— Game-board motion (neo-brutal / lab, not soft AI fades) ——— */
+@keyframes protocol-blink{
+  0%,100%{opacity:1;box-shadow:0 0 0 0 #D2E823}
+  50%{opacity:.35;box-shadow:0 0 0 3px transparent}
+}
+@keyframes stamp-in{
+  0%{opacity:0;transform:translate(10px,14px) rotate(-1.5deg) scale(.96)}
+  55%{opacity:1;transform:translate(-2px,-2px) rotate(.6deg) scale(1.02)}
+  100%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}
+}
+@keyframes sticker-wobble{
+  0%,100%{transform:rotate(var(--sticker-rot,-3deg))}
+  40%{transform:rotate(calc(var(--sticker-rot,-3deg) + 1.8deg))}
+  70%{transform:rotate(calc(var(--sticker-rot,-3deg) - 1.2deg))}
+}
+@keyframes maze-draw{
+  to{stroke-dashoffset:0}
+}
+@keyframes token-pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.18)}
+}
+@keyframes title-slam{
+  0%{opacity:0;transform:translateY(18px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+@keyframes underline-grow{
+  from{text-decoration-color:transparent}
+  to{text-decoration-color:#D2E823}
+}
+@keyframes slam-select{
+  0%{transform:scale(1)}
+  35%{transform:scale(.97) translate(2px,2px)}
+  100%{transform:scale(1) translate(0,0)}
+}
+@keyframes panel-slam{
+  0%{opacity:0;transform:translateY(18px) rotate(-.8deg);box-shadow:0 0 0 #09090B}
+  60%{opacity:1;transform:translateY(-4px) rotate(.4deg);box-shadow:8px 8px 0 #09090B}
+  100%{opacity:1;transform:translateY(0) rotate(0);box-shadow:6px 6px 0 #09090B}
+}
+@keyframes phase-rise{
+  0%{opacity:0;transform:translateY(24px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+@keyframes dice-shake{
+  0%,100%{transform:rotate(0)}
+  25%{transform:rotate(-6deg)}
+  75%{transform:rotate(6deg)}
+}
+@keyframes grid-scan{
+  0%{transform:translateY(-100%)}
+  100%{transform:translateY(100%)}
+}
+
+.protocol-live{animation:protocol-blink 1.6s steps(2,end) infinite}
+.sticker-live{animation:sticker-wobble 4.5s ease-in-out infinite;transform-origin:center}
+.maze-path.is-drawing{
+  animation:maze-draw 2.8s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.maze-token{transform-box:fill-box;transform-origin:center;animation:token-pulse 1.4s ease-in-out infinite}
+.maze-scan{
+  position:absolute;left:0;right:0;height:28%;
+  background:linear-gradient(to bottom,transparent,rgba(210,232,35,.18),transparent);
+  animation:grid-scan 3.2s linear infinite;
+  pointer-events:none;
+}
+.hero-title{
+  animation:title-slam .55s cubic-bezier(.2,.85,.25,1) both;
+}
+.hero-title .hero-else{
+  text-decoration-line:underline;
+  text-decoration-thickness:8px;
+  text-decoration-color:#D2E823;
+  text-underline-offset:4px;
+  animation:underline-grow .5s ease .35s both;
+}
+.query-card.is-picking{animation:slam-select .22s cubic-bezier(.2,.9,.3,1)}
+.query-card .card-icon{transition:transform .2s cubic-bezier(.2,.9,.3,1)}
+.query-card:hover .card-icon{animation:dice-shake .35s ease-in-out}
+#diagnostic-result.is-visible{display:block;animation:panel-slam .45s cubic-bezier(.2,.85,.25,1) both}
+.reveal-stamp{
+  opacity:0;
+  transform:translate(10px,14px);
+  transition:none;
+}
+.reveal-stamp.is-in{
+  animation:stamp-in .55s cubic-bezier(.2,.85,.25,1) both;
+}
+.reveal-stamp.is-in[data-delay="1"]{animation-delay:.08s}
+.reveal-stamp.is-in[data-delay="2"]{animation-delay:.16s}
+.reveal-stamp.is-in[data-delay="3"]{animation-delay:.24s}
+.phase-card{opacity:0}
+.phase-card.is-in{animation:phase-rise .5s cubic-bezier(.2,.85,.25,1) both}
+.phase-card.is-in:nth-child(1){animation-delay:.05s}
+.phase-card.is-in:nth-child(2){animation-delay:.18s}
+.phase-card.is-in:nth-child(3){animation-delay:.31s}
+@media (prefers-reduced-motion:reduce){
+  .animate-marquee,.protocol-live,.sticker-live,.maze-path,.maze-token,.maze-scan,
+  .hero-title,.hero-title .hero-else,
+  .query-card.is-picking,.query-card:hover .card-icon,#diagnostic-result.is-visible,
+  .reveal-stamp.is-in,.phase-card.is-in{animation:none!important}
+  .maze-motion{display:none}
+  .reveal-stamp,.phase-card{opacity:1;transform:none}
+  .hero-title{opacity:1;transform:none}
+  .hero-title .hero-else{text-decoration-color:#D2E823}
+  .maze-path{stroke-dashoffset:0}
+}
+.reviews-track{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1.5rem;
+  padding-right:8px;
+  padding-bottom:12px;
+}
+@media (min-width:768px){
+  .reviews-track{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.75rem}
+}
+@media (min-width:1024px){
+  .reviews-track{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.75rem}
+}
+.review-card{
+  min-width:0;
+  height:100%;
+}
+</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-primary-fixed-variant":"#434b00","error":"#ba1a1a","tertiary-fixed":"#ffdada","on-primary-container":"#5b6600","on-secondary-container":"#fffbff","outline":"#777961","primary-fixed":"#d8ef2c","primary-container":"#d2e823","primary":"#596400","error-container":"#ffdad6","surface-container-lowest":"#ffffff","surface-tint":"#596400","surface-bright":"#fcf8fb","surface-container-highest":"#e5e1e4","surface":"#fcf8fb","on-tertiary-container":"#c20038","on-primary-fixed":"#1a1e00","surface-container":"#f0edf0","on-secondary":"#ffffff","surface-variant":"#e5e1e4","on-tertiary-fixed-variant":"#920028","on-error-container":"#93000a","on-background":"#1c1b1d","on-error":"#ffffff","primary-fixed-dim":"#bdd200","on-tertiary-fixed":"#40000c","secondary":"#1d4ed8","surface-container-low":"#f6f2f5","on-secondary-fixed-variant":"#0039b5","on-surface":"#1c1b1d","on-tertiary":"#ffffff","tertiary":"#be0037","tertiary-fixed-dim":"#ffb3b6","inverse-on-surface":"#f3f0f2","on-secondary-fixed":"#001551","secondary-fixed":"#dce1ff","tertiary-container":"#ffd1d2","secondary-fixed-dim":"#b7c4ff","surface-container-high":"#eae7ea","inverse-surface":"#313032","on-primary":"#ffffff","surface-dim":"#dcd9dc","background":"#fcf8fb","outline-variant":"#c7c8ad","secondary-container":"#4069f2","inverse-primary":"#bdd200","on-surface-variant":"#464833"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin-mobile":"1rem","space-lg":"1.5rem","space-xs":"0.25rem","space-xl":"2.5rem","gutter":"1.5rem","space-sm":"0.5rem","margin":"2.5rem","gutter-mobile":"0.75rem","space-md":"1rem"},"fontFamily":{"headline-sm":["Onest"],"headline-lg-mobile":["Onest"],"display-xl":["Onest"],"body-sm":["Onest"],"headline-lg":["Onest"],"body-lg":["Onest"],"display-xl-mobile":["Onest"],"label-md":["Onest"],"label-sm":["Onest"],"headline-md":["Onest"],"body-md":["Onest"],"label-lg":["Onest"]},"fontSize":{"headline-sm":["20px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg-mobile":["28px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"700"}],"display-xl":["72px",{"lineHeight":"76px","letterSpacing":"-0.04em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"headline-lg":["40px",{"lineHeight":"44px","letterSpacing":"-0.03em","fontWeight":"700"}],"body-lg":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"500"}],"display-xl-mobile":["44px",{"lineHeight":"48px","letterSpacing":"-0.03em","fontWeight":"700"}],"label-md":["12px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"700"}],"label-sm":["10px",{"lineHeight":"12px","letterSpacing":"0.1em","fontWeight":"700"}],"headline-md":["28px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"label-lg":["14px",{"lineHeight":"16px","letterSpacing":"0.06em","fontWeight":"700"}]}}}};</script></head><body id="top" class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-surface"><header class="fixed top-0 left-0 right-0 z-50 p-4 pointer-events-none"><div class="relative pointer-events-auto h-[72px] max-w-7xl mx-auto px-space-md lg:px-space-lg flex items-center justify-between rounded-none border-2 border-[#09090B] bg-[#F8F4E8]/95 backdrop-blur-md shadow-[4px_4px_0px_#09090B]"><div class="flex items-center gap-space-sm"><a class="text-[22px] tracking-tight text-[#09090B] uppercase font-['Dela_Gothic_One'] hover:text-secondary transition-colors" data-path="games-catalog" href="#top">PSYGAME</a><span class="hidden sm:inline-flex items-center px-space-xs py-0.5 border border-[#09090B] rounded-full bg-primary-container text-[#09090B] font-label-sm text-label-sm uppercase tracking-wider shadow-[1px_1px_0px_#09090B]">TRANSFORMATION LAB</span></div><nav class="hidden lg:flex items-center gap-space-md font-label-md text-label-md uppercase tracking-wider" data-active-classes="bg-[#09090B] text-[#F8F4E8] rounded-none shadow-[2px_2px_0px_#D2E823]"><a aria-current="page" class="px-space-sm py-1.5 transition-all bg-[#09090B] text-[#F8F4E8] rounded-none shadow-[2px_2px_0px_#D2E823]" data-path="games-catalog" href="#interactive-selector">Игры</a><a class="px-space-sm py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="methodology" href="#how-it-works">Как это работает</a><a class="px-space-sm py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="author-profile" href="#about">Обо мне</a><a class="px-space-sm py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="testimonials" href="#reviews">Отзывы</a><a class="px-space-sm py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" data-path="pricing-tiers" href="#formats">Цены</a></nav><div class="flex items-center gap-space-sm"><a class="inline-flex items-center justify-center px-space-md py-2 border-2 border-[#09090B] bg-[#F8F4E8] text-[#09090B] font-label-md text-label-md tracking-wider uppercase shadow-[2px_2px_0px_#09090B] hover:bg-primary-container hover:shadow-[3px_3px_0px_#09090B] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" data-path="booking-flow" href="#formats">ВЫБРАТЬ ИГРУ</a><div class="hidden sm:flex w-8 h-8 rounded-none bg-primary border-2 border-[#09090B] items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><button type="button" id="menu-toggle" class="lg:hidden w-10 h-10 border-2 border-[#09090B] bg-[#F8F4E8] shadow-[2px_2px_0px_#09090B] flex items-center justify-center" aria-label="Меню" onclick="toggleMobileMenu()"><span class="material-symbols-outlined text-[22px]">menu</span></button></div></div><div id="mobile-menu" class="hidden lg:hidden absolute top-[88px] left-4 right-4 flex-col gap-2 p-4 border-2 border-[#09090B] bg-[#F8F4E8] shadow-[4px_4px_0px_#09090B] pointer-events-auto z-50"><a class="px-3 py-2 font-label-md text-label-md uppercase border-2 border-transparent hover:border-[#09090B] hover:bg-primary-container" href="#interactive-selector" onclick="toggleMobileMenu(false)">Игры</a><a class="px-3 py-2 font-label-md text-label-md uppercase border-2 border-transparent hover:border-[#09090B] hover:bg-primary-container" href="#how-it-works" onclick="toggleMobileMenu(false)">Как это работает</a><a class="px-3 py-2 font-label-md text-label-md uppercase border-2 border-transparent hover:border-[#09090B] hover:bg-primary-container" href="#about" onclick="toggleMobileMenu(false)">Обо мне</a><a class="px-3 py-2 font-label-md text-label-md uppercase border-2 border-transparent hover:border-[#09090B] hover:bg-primary-container" href="#reviews" onclick="toggleMobileMenu(false)">Отзывы</a><a class="px-3 py-2 font-label-md text-label-md uppercase border-2 border-transparent hover:border-[#09090B] hover:bg-primary-container" href="#formats" onclick="toggleMobileMenu(false)">Цены</a><a class="mt-2 px-3 py-3 text-center bg-primary-container border-2 border-[#09090B] font-label-md text-label-md uppercase font-bold shadow-[2px_2px_0px_#09090B]" href="#formats" onclick="toggleMobileMenu(false)">Выбрать игру</a></div></header><main class="w-full pt-[104px] min-h-screen bg-surface"><div class="flex flex-col w-full relative selection:bg-primary-container selection:text-[#09090B] font-body-md text-on-surface">
+<!-- SVG Global Noise Filter (Ambient Brutalist Texture 3%) -->
+<svg class="pointer-events-none fixed inset-0 z-40 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
+<filter id="noiseFilter">
+<feTurbulence baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" type="fractalNoise"></feTurbulence>
+</filter>
+<rect filter="url(#noiseFilter)" height="100%" width="100%"></rect>
+</svg>
+<!-- SECTION 1: HERO SECTION (12-Column Magazine Broadsheet) -->
+<section class="w-full border-b-4 border-[#09090B] bg-[#F8F4E8] relative overflow-hidden">
+<!-- Tactical Top Meta Bar -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2 border-b-2 border-[#09090B] flex flex-wrap items-center justify-between text-label-sm font-label-sm uppercase tracking-widest text-[#09090B]/80">
+<div class="flex items-center gap-3">
+<span class="inline-block w-2.5 h-2.5 bg-primary-container border border-[#09090B] protocol-live"></span>
+<span>LABORATORY PROTOCOL #08-PSY</span>
+<span class="text-[#09090B]/30">/</span>
+<span>АВТОРСКАЯ МЕТОДИКА АННЫ ОРЛОВОЙ</span>
+</div>
+<div class="flex items-center gap-4">
+<span>ONLINE // OFFLINE WORKSHOPS</span>
+<span class="px-2 py-0.5 bg-[#09090B] text-[#F8F4E8] font-bold">VERIFIED 2025</span>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+<!-- Left 7 Columns: Giant Provocation & Actions -->
+<div class="lg:col-span-7 flex flex-col justify-start">
+<div class="flex items-center gap-3 mb-6">
+<span class="sticker-live px-3 py-1 bg-primary-container border-2 border-[#09090B] shadow-[2px_2px_0px_#09090B] text-label-md font-label-md uppercase tracking-wider text-[#09090B] font-bold" style="--sticker-rot:-2deg">
+              ★ 350+ КЛИЕНТОВ УЖЕ СЫГРАЛИ
+            </span>
+<span class="text-label-sm font-label-sm tracking-widest text-[#09090B]/60 uppercase">
+              ФОРМАТ: 3 ЧАСА = ГОД ТЕРАПИИ
+            </span>
+</div>
+<!-- Hero title (original layout + light motion) -->
+<h1 class="hero-title font-['Dela_Gothic_One'] text-[46px] sm:text-[68px] lg:text-[88px] leading-[0.92] tracking-tighter text-[#09090B] uppercase select-none relative inline-block">
+<span class="hero-line relative z-10">А ЕСЛИ МОЖНО</span><br/>
+<span class="hero-else relative z-10">ИНАЧЕ?</span>
+</h1>
+<div class="mt-8 border-l-4 border-primary-container pl-4 sm:pl-6 space-y-4">
+<p class="max-w-xl font-['Onest'] text-[17px] sm:text-[19px] leading-[1.45] tracking-[-0.01em] font-medium text-[#09090B]/90">
+              Трансформационные игры, которые помогают увидеть свою ситуацию под новым углом, найти новые стратегии и решиться на изменения без выгорания.
+            </p>
+<p class="max-w-xl font-['Onest'] text-[14px] sm:text-[15px] leading-[1.5] tracking-[-0.005em] font-normal text-[#09090B]/55">
+              <span class="font-semibold text-secondary tracking-[0.08em]">//</span> «Не нужно знать все ответы прямо сейчас. Достаточно начать задавать правильные вопросы».
+            </p>
+</div>
+<!-- CTA Controls Neo-Brutalist -->
+<div class="mt-10 flex flex-wrap items-center gap-4 sm:gap-6">
+<a class="inline-flex items-center justify-center px-8 py-4 bg-primary-container text-[#09090B] border-3 border-[#09090B] font-label-lg text-label-lg uppercase tracking-wider font-bold shadow-[4px_4px_0px_#09090B] hover:shadow-[6px_6px_0px_#09090B] hover:-translate-x-[2px] hover:-translate-y-[2px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" href="#interactive-selector">
+              НАЙТИ СВОЮ ИГРУ
+              <span class="material-symbols-outlined ml-2 font-bold">arrow_forward</span>
+</a>
+<a class="inline-flex items-center justify-center px-7 py-4 bg-[#F8F4E8] text-[#09090B] border-2 border-[#09090B] font-label-lg text-label-lg uppercase tracking-wider font-bold shadow-[3px_3px_0px_#09090B] hover:bg-secondary hover:text-[#F8F4E8] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" href="#how-it-works">
+              КАК ЭТО РАБОТАЕТ
+              <span class="material-symbols-outlined ml-2 font-bold text-[18px]">help</span>
+</a>
+</div>
+<!-- Micro Spec Ticker below buttons -->
+<div class="mt-10 pt-6 border-t-2 border-[#09090B]/20 flex flex-wrap items-center gap-6 text-label-sm font-label-sm uppercase tracking-wider text-[#09090B]/75">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<span>100% ЭКОЛОГИЧНОСТЬ</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">lock_clock</span>
+<span>ЗА 1 ВСТРЕЧУ РАСПУТАЕМ ХАОС</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">psychology</span>
+<span>0% ЭЗОТЕРИКИ</span>
+</div>
+</div>
+</div>
+<!-- Right 5 Columns: Dynamic Asymmetrical Dossier / Board Labyrinth Artifact -->
+<div class="lg:col-span-5 relative mt-6 lg:mt-0">
+<div class="relative bg-[#ECE7D5] border-3 border-[#09090B] shadow-[8px_8px_0px_#09090B] p-6 lg:p-8 flex flex-col gap-6">
+<!-- Technical Header of Card -->
+<div class="flex items-center justify-between border-b-2 border-[#09090B] pb-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-none bg-tertiary border border-[#09090B]"></span>
+<span class="w-3 h-3 rounded-none bg-primary-container border border-[#09090B]"></span>
+<span class="w-3 h-3 rounded-none bg-secondary border border-[#09090B]"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest font-bold ml-2">MAP // LABYRINTH</span>
+</div>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#09090B] text-[#F8F4E8] font-label-sm text-label-sm">SYSTEM V.4</span>
+</div>
+<!-- Visual Metaphor: Neo-Brutalist Visual Field -->
+<div class="relative w-full aspect-square border-2 border-[#09090B] bg-[#F8F4E8] overflow-hidden p-4 flex flex-col justify-between" id="labyrinth-board">
+<!-- Background Technical Grid Matrix -->
+<div class="absolute inset-0 bg-[linear-gradient(to_right,#09090B10_1px,transparent_1px),linear-gradient(to_bottom,#09090B10_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+<div class="maze-scan" aria-hidden="true"></div>
+<!-- Labyrinth Schema Graphic SVG -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" fill="none" viewBox="0 0 300 300">
+<path class="maze-path" d="M 30,30 L 270,30 L 270,270 L 60,270 L 60,70 L 230,70 L 230,230 L 100,230 L 100,110 L 190,110 L 190,190" stroke="#09090B" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"></path>
+<path d="M 30,30 L 270,30 L 270,270 L 60,270 L 60,70 L 230,70 L 230,230 L 100,230 L 100,110 L 190,110 L 190,190" stroke="#09090B" stroke-dasharray="6 6" stroke-opacity="0.2" stroke-width="3"></path>
+<g>
+<circle class="maze-token" cx="0" cy="0" fill="#D2E823" r="12" stroke="#09090B" stroke-width="3"></circle>
+<text fill="#09090B" font-family="Onest" font-size="11" font-weight="bold" text-anchor="middle" dominant-baseline="central" x="0" y="1">X</text>
+<animateMotion class="maze-motion" dur="7s" repeatCount="indefinite" path="M 30,30 L 270,30 L 270,270 L 60,270 L 60,70 L 230,70 L 230,230 L 100,230 L 100,110 L 190,110 L 190,190" keyTimes="0;1" calcMode="linear"></animateMotion>
+</g>
+</svg>
+<!-- Editorial Stickers occluded on top -->
+<div class="relative z-10 self-start">
+<div class="sticker-live inline-block px-3 py-1.5 bg-[#09090B] text-[#F8F4E8] border-2 border-[#09090B] shadow-[3px_3px_0px_#D2E823] font-label-md text-label-md uppercase tracking-wider" style="--sticker-rot:-3deg">
+                  3 ЧАСА ВМЕСТО ГОДОВ
+                </div>
+</div>
+<!-- Center Interactive Pulse Indicator -->
+<div class="relative z-10 self-center text-center my-auto">
+<div class="inline-block bg-[#F8F4E8]/95 border-2 border-[#09090B] p-4 shadow-[4px_4px_0px_#09090B]">
+<span class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] block">«СЛЕПАЯ ЗОНА»</span>
+<span class="font-body-sm text-body-sm text-[#09090B]/70 block mt-1">Там, где застряла энергия</span>
+</div>
+</div>
+<div class="relative z-10 flex items-center justify-between gap-2">
+<div class="sticker-live px-2.5 py-1 bg-tertiary-container text-on-tertiary-container border-2 border-[#09090B] font-label-sm text-label-sm font-bold shadow-[2px_2px_0px_#09090B]" style="--sticker-rot:2deg">
+                  0% ЭЗОТЕРИКИ // ЧИСТАЯ НАУКА
+                </div>
+<div class="sticker-live px-2.5 py-1 bg-primary-container text-[#09090B] border-2 border-[#09090B] font-label-sm text-label-sm font-bold shadow-[2px_2px_0px_#09090B]" style="--sticker-rot:-1deg">
+                  ВЫХОД ЕСТЬ
+                </div>
+</div>
+</div>
+<!-- Tactical Spec list -->
+<div class="space-y-2 border-t-2 border-[#09090B] pt-4 font-body-sm text-body-sm">
+<div class="flex justify-between items-center py-1 border-b border-[#09090B]/10">
+<span class="text-[#09090B]/70 uppercase font-label-sm">МЕТОДОЛОГИЯ:</span>
+<span class="font-bold text-[#09090B]">Арт-терапия + Игровой тренинг</span>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-[#09090B]/10">
+<span class="text-[#09090B]/70 uppercase font-label-sm">ВЕДУЩАЯ:</span>
+<span class="font-bold text-[#09090B]">Анна Орлова (7 лет практики)</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="text-[#09090B]/70 uppercase font-label-sm">ГАРАНТИЯ:</span>
+<span class="font-bold text-[#09090B]">100% Психологическая безопасность</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: ACID RUNNING MARQUEE TICKER -->
+<section class="w-full bg-primary-container border-b-4 border-[#09090B] py-3 overflow-hidden select-none">
+<div class="flex whitespace-nowrap will-change-transform animate-marquee">
+<div class="flex items-center gap-6 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] tracking-tight">
+<span>МЕНЯЙ СЦЕНАРИЙ</span>
+<span class="text-tertiary">★</span>
+<span>ИССЛЕДУЙ СЕБЯ</span>
+<span class="text-secondary">★</span>
+<span>ПРОБУЙ ИНАЧЕ</span>
+<span class="text-[#09090B]">★</span>
+<span>ТВОЙ СЛЕДУЮЩИЙ ХОД</span>
+<span class="text-tertiary">★</span>
+<span>ВЫХОД ИЗ ТУПИКА</span>
+<span class="text-[#09090B]">★</span>
+<span>МЕНЯЙ СЦЕНАРИЙ</span>
+<span class="text-secondary">★</span>
+<span>ИССЛЕДУЙ СЕБЯ</span>
+<span class="text-[#09090B]">★</span>
+<span>ПРОБУЙ ИНАЧЕ</span>
+<span class="text-tertiary">★</span>
+<span>ТВОЙ СЛЕДУЮЩИЙ ХОД</span>
+<span class="text-[#09090B]">★</span>
+</div>
+<div aria-hidden="true" class="flex items-center gap-6 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] tracking-tight ml-6">
+<span>МЕНЯЙ СЦЕНАРИЙ</span>
+<span class="text-tertiary">★</span>
+<span>ИССЛЕДУЙ СЕБЯ</span>
+<span class="text-secondary">★</span>
+<span>ПРОБУЙ ИНАЧЕ</span>
+<span class="text-[#09090B]">★</span>
+<span>ТВОЙ СЛЕДУЮЩИЙ ХОД</span>
+<span class="text-tertiary">★</span>
+<span>ВЫХОД ИЗ ТУПИКА</span>
+<span class="text-[#09090B]">★</span>
+<span>МЕНЯЙ СЦЕНАРИЙ</span>
+<span class="text-secondary">★</span>
+<span>ИССЛЕДУЙ СЕБЯ</span>
+<span class="text-[#09090B]">★</span>
+<span>ПРОБУЙ ИНАЧЕ</span>
+<span class="text-tertiary">★</span>
+<span>ТВОЙ СЛЕДУЮЩИЙ ХОД</span>
+<span class="text-[#09090B]">★</span>
+</div>
+</div>
+</section>
+<!-- SECTION 3: INTERACTIVE BENTO SELECTOR (ЧТО ТЕБЯ СЕЙЧАС ВОЛНУЕТ?) -->
+<section class="w-full bg-[#ECE7D5] border-b-4 border-[#09090B] py-16 lg:py-24" id="interactive-selector">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b-4 border-[#09090B]">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="w-3 h-3 bg-[#09090B]"></span>
+<span class="font-label-md text-label-md uppercase tracking-wider text-[#09090B] font-bold">ДИАГНОСТИЧЕСКИЙ НАВИГАТОР</span>
+</div>
+<h2 class="font-['Dela_Gothic_One'] text-[32px] sm:text-[48px] uppercase tracking-tight text-[#09090B] leading-none">
+            ЧТО ТЕБЯ СЕЙЧАС ВОЛНУЕТ?
+          </h2>
+</div>
+<p class="font-body-md text-body-md text-[#09090B]/80 max-w-md">
+          Нажми на карточку, наиболее точно описывающую твое состояние прямо сейчас, чтобы получить персональную рекомендацию формата.
+        </p>
+</div>
+<!-- Bento Grid (7 requests) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+<!-- Card 1 -->
+<div class="query-card reveal-stamp cursor-pointer border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[4px_4px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#09090B] transition-all flex flex-col justify-between min-h-[190px]" data-card-id="0" data-delay="0" onclick="selectRequest(0)">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider px-2 py-0.5 bg-[#09090B] text-[#F8F4E8]">QUERY 01</span>
+<span class="material-symbols-outlined card-icon text-[24px]">favorite</span>
+</div>
+<p class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] leading-snug mt-4">
+            «Хочу разобраться в отношениях»
+          </p>
+<span class="text-label-sm font-label-sm uppercase text-[#09090B]/60 mt-3">Сценарии близости • Поиск партнёра • Границы</span>
+</div>
+<!-- Card 2 -->
+<div class="query-card reveal-stamp cursor-pointer border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[4px_4px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#09090B] transition-all flex flex-col justify-between min-h-[190px]" data-card-id="1" data-delay="1" onclick="selectRequest(1)">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider px-2 py-0.5 bg-[#09090B] text-[#F8F4E8]">QUERY 02</span>
+<span class="material-symbols-outlined card-icon text-[24px]">explore</span>
+</div>
+<p class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] leading-snug mt-4">
+            «Хочу найти себя и своё предназначение»
+          </p>
+<span class="text-label-sm font-label-sm uppercase text-[#09090B]/60 mt-3">Смысл • Смена профессии • Внутренняя опора</span>
+</div>
+<!-- Card 3 -->
+<div class="query-card reveal-stamp cursor-pointer border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[4px_4px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#09090B] transition-all flex flex-col justify-between min-h-[190px]" data-card-id="2" data-delay="2" onclick="selectRequest(2)">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider px-2 py-0.5 bg-[#09090B] text-[#F8F4E8]">QUERY 03</span>
+<span class="material-symbols-outlined card-icon text-[24px]">flag</span>
+</div>
+<p class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] leading-snug mt-4">
+            «Хочу начать действовать и достигать целей»
+          </p>
+<span class="text-label-sm font-label-sm uppercase text-[#09090B]/60 mt-3">Прокрастинация • Страх ошибки • Фокус</span>
+</div>
+<!-- Card 4 -->
+<div class="query-card reveal-stamp cursor-pointer border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[4px_4px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#09090B] transition-all flex flex-col justify-between min-h-[190px]" data-card-id="3" data-delay="0" onclick="selectRequest(3)">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider px-2 py-0.5 bg-[#09090B] text-[#F8F4E8]">QUERY 04</span>
+<span class="material-symbols-outlined card-icon text-[24px]">healing</span>
+</div>
+<p class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] leading-snug mt-4">
+            «Хочу разобраться с обидами и конфликтами»
+          </p>
+<span class="text-label-sm font-label-sm uppercase text-[#09090B]/60 mt-3">Прошлый опыт • Сепарация • Освобождение</span>
+</div>
+<!-- Card 5 -->
+<div class="query-card reveal-stamp cursor-pointer border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[4px_4px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#09090B] transition-all flex flex-col justify-between min-h-[190px]" data-card-id="4" data-delay="1" onclick="selectRequest(4)">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider px-2 py-0.5 bg-[#09090B] text-[#F8F4E8]">QUERY 05</span>
+<span class="material-symbols-outlined card-icon text-[24px]">bolt</span>
+</div>
+<p class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] leading-snug mt-4">
+            «Хочу найти ресурсы и энергию»
+          </p>
+<span class="text-label-sm font-label-sm uppercase text-[#09090B]/60 mt-3">Усталость • Восстановление • Источники силы</span>
+</div>
+<!-- Card 6 -->
+<div class="query-card reveal-stamp cursor-pointer border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[4px_4px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[6px_6px_0px_#09090B] transition-all flex flex-col justify-between min-h-[190px]" data-card-id="5" data-delay="2" onclick="selectRequest(5)">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider px-2 py-0.5 bg-[#09090B] text-[#F8F4E8]">QUERY 06</span>
+<span class="material-symbols-outlined card-icon text-[24px]">trending_up</span>
+</div>
+<p class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] leading-snug mt-4">
+            «Хочу новые идеи и возможности для бизнеса»
+          </p>
+<span class="text-label-sm font-label-sm uppercase text-[#09090B]/60 mt-3">Масштаб • Генерация гипотез • Стратегия</span>
+</div>
+<!-- Card 7: Featured Master Request (Full Span 3 Cols) -->
+<div class="query-card reveal-stamp cursor-pointer lg:col-span-3 border-3 border-[#09090B] bg-primary-container p-6 lg:p-8 shadow-[6px_6px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#09090B] transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6" data-card-id="6" data-delay="3" onclick="selectRequest(6)">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 bg-[#09090B] text-primary-container font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                QUERY 07 // САМЫЙ ЧАСТЫЙ КЕЙС
+              </span>
+<span class="font-label-sm text-label-sm uppercase font-bold text-[#09090B]">★ ТОЧКА НОЛЬ</span>
+</div>
+<p class="font-['Dela_Gothic_One'] text-headline-md uppercase text-[#09090B]">
+              «Пока не понимаю, чего хочу вообще»
+            </p>
+<p class="font-body-md text-body-md text-[#09090B]/90 max-w-2xl">
+              Ощущение тупика, потеря вектора или «всё нормально, но чего-то не хватает». В игре мы раскапываем подлинные желания из-под слоев чужих ожиданий.
+            </p>
+</div>
+<span class="px-6 py-3 bg-[#09090B] text-[#F8F4E8] font-label-md text-label-md uppercase font-bold tracking-wider shrink-0 border-2 border-[#09090B] shadow-[2px_2px_0px_#F8F4E8]">
+            ВЫБРАТЬ ЭТОТ ЗАПРОС
+          </span>
+</div>
+</div>
+<!-- Dynamic Diagnosis Recommendation Panel -->
+<div class="mt-8 border-3 border-[#09090B] bg-[#F8F4E8] p-6 lg:p-8 shadow-[6px_6px_0px_#09090B] hidden" id="diagnostic-result" aria-live="polite">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-1 bg-[#D2E823] border border-[#09090B] font-label-sm text-label-sm font-bold uppercase tracking-wider text-[#09090B]">
+                РЕЗУЛЬТАТ ДИАГНОСТИКИ
+              </span>
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-secondary" id="result-tag">
+                РЕКОМЕНДОВАННЫЙ ФОРМАТ: ИНДИВИДУАЛЬНАЯ ИГРА
+              </span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" id="result-title">
+              Похоже, сейчас тебе важно посмотреть на ситуацию с новой стороны
+            </h3>
+<p class="font-body-md text-body-md text-[#09090B]/80 max-w-3xl" id="result-desc">
+              Вместо бесконечного пережевывания мы перенесем этот запрос на игровое поле. Ты за 3 часа увидишь скрытые паттерны и нащупаешь неочевидное решение.
+            </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-3 shrink-0">
+<a class="px-6 py-4 bg-primary-container text-[#09090B] border-2 border-[#09090B] font-label-md text-label-md uppercase font-bold tracking-wider shadow-[3px_3px_0px_#09090B] hover:shadow-[5px_5px_0px_#09090B] text-center transition-all" href="https://app.leadpay.ru/checkout/1817/" id="result-link" target="_blank">
+              ПОЛУЧИТЬ МОЮ РЕКОМЕНДАЦИЮ
+            </a>
+<a class="px-6 py-4 bg-[#F8F4E8] text-[#09090B] border-2 border-[#09090B] font-label-md text-label-md uppercase font-bold tracking-wider shadow-[3px_3px_0px_#09090B] hover:bg-[#09090B] hover:text-[#F8F4E8] text-center transition-all" href="https://wa.me/79221023802" target="_blank">
+              СПРОСИТЬ В WHATSAPP
+            </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: HOW IT WORKS (ЭТО НЕ ПРОСТО ИГРА) -->
+<section class="w-full bg-[#F8F4E8] border-b-4 border-[#09090B] py-16 lg:py-24" id="how-it-works">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="max-w-3xl mb-12">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-[#ECE7D5] border-2 border-[#09090B] shadow-[2px_2px_0px_#09090B] mb-4">
+<span class="font-label-sm text-label-sm uppercase font-bold text-[#09090B]">АЛГОРИТМ ТРАНСФОРМАЦИИ</span>
+</div>
+<h2 class="font-['Dela_Gothic_One'] text-[34px] sm:text-[52px] uppercase tracking-tight text-[#09090B] leading-none mb-4">
+          ЭТО НЕ ПРОСТО ИГРА.
+        </h2>
+<p class="font-body-lg text-body-lg text-[#09090B]/80 font-medium">
+          Иногда, чтобы найти ответ, нужно перестать искать его привычным способом. В игре психика снимает психологические защиты и выдает истинные мотивы без самообмана.
+        </p>
+</div>
+<!-- 3 Distinct Phases Editorial Flow -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
+<!-- Phase 01: Request (Dark Dossier) -->
+<div class="phase-card border-3 border-[#09090B] bg-[#09090B] text-[#F8F4E8] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between relative group hover:-translate-y-1 transition-all">
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-[#F8F4E8]/20 pb-4">
+<span class="font-['Dela_Gothic_One'] text-headline-lg text-primary-container">01</span>
+<span class="px-2 py-0.5 bg-primary-container text-[#09090B] font-label-sm text-label-sm uppercase font-bold">ВХОДНОЙ БИЛЕТ</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#F8F4E8]">
+              ТОЧНЫЙ ЗАПРОС
+            </h3>
+<p class="font-body-md text-body-md text-[#F8F4E8]/80 leading-relaxed">
+              Ты приходишь со своей ситуацией, вопросом, кризисом или конкретной целью. Мы вместе калибруем формулировку, отсекая вторичный шум, пока не обнажится нерв задачи.
+            </p>
+</div>
+<div class="mt-8 pt-4 border-t border-[#F8F4E8]/20 flex items-center justify-between font-label-sm text-label-sm uppercase text-[#F8F4E8]/60">
+<span>ШАГ: ФОРМУЛИРОВАНИЕ</span>
+<span class="text-primary-container">ТАЙМИНГ: 20 МИН</span>
+</div>
+</div>
+<!-- Phase 02: Exploration (Acid Green Flash Card) -->
+<div class="phase-card border-3 border-[#09090B] bg-primary-container text-[#09090B] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between relative group hover:-translate-y-1 transition-all">
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b-2 border-[#09090B] pb-4">
+<span class="font-['Dela_Gothic_One'] text-headline-lg text-[#09090B]">02</span>
+<span class="px-2 py-0.5 bg-[#09090B] text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">ПОЛЕ ДЕЙСТВИЙ</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]">
+              ИССЛЕДОВАНИЕ В ИГРЕ
+            </h3>
+<p class="font-body-md text-body-md text-[#09090B] font-medium leading-relaxed">
+              В игровом процессе смотришь на привычные сценарии под новым углом. Пробуешь нестандартные ходы без риска для реальной жизни, замечаешь альтернативы и разрушаешь тупиковые шаблоны.
+            </p>
+</div>
+<div class="mt-8 pt-4 border-t-2 border-[#09090B] flex items-center justify-between font-label-sm text-label-sm uppercase text-[#09090B]/80 font-bold">
+<span>ШАГ: МОДЕЛИРОВАНИЕ</span>
+<span>ТАЙМИНГ: 120 МИН</span>
+</div>
+</div>
+<!-- Phase 03: New Vision & Action Steps (High Contrast Paper) -->
+<div class="phase-card border-3 border-[#09090B] bg-[#ECE7D5] text-[#09090B] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between relative group hover:-translate-y-1 transition-all">
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b-2 border-[#09090B] pb-4">
+<span class="font-['Dela_Gothic_One'] text-headline-lg text-secondary">03</span>
+<span class="px-2 py-0.5 bg-secondary text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">АРТЕФАКТ</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]">
+              НОВЫЙ ВЗГЛЯД И ПЛАН
+            </h3>
+<p class="font-body-md text-body-md text-[#09090B]/85 leading-relaxed">
+              Формулируешь сухие железобетонные выводы и определяешь конкретные шаги, которые можешь попробовать в жизни уже на следующий день. Никакой размытой мотивации.
+            </p>
+</div>
+<div class="mt-8 pt-4 border-t-2 border-[#09090B] flex items-center justify-between font-label-sm text-label-sm uppercase text-[#09090B]/70 font-bold">
+<span>ШАГ: ИНТЕГРАЦИЯ В ЖИЗНЬ</span>
+<span class="text-secondary">ТАЙМИНГ: 40 МИН</span>
+</div>
+</div>
+</div>
+<!-- Tactical Micro Callout -->
+<div class="mt-8 p-6 bg-[#F8F4E8] border-2 border-[#09090B] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[28px] text-tertiary">warning</span>
+<p class="font-body-sm text-body-sm text-[#09090B]">
+<strong>Защита от травмирования:</strong> Игровой процесс бережно обходит психологическое сопротивление. Мы не «ломаем» психику, а даем ей безопасный полигон для экспериментов.
+          </p>
+</div>
+<a class="font-label-sm text-label-sm font-bold uppercase tracking-wider underline hover:text-secondary shrink-0" href="#formats">
+          СМОТРЕТЬ ТАРИФЫ →
+        </a>
+</div>
+</div>
+</section>
+<!-- SECTION 5: WITH WHAT QUERY (BENTO GRID — 6 DIRECTIONS) -->
+<section class="w-full bg-[#ECE7D5] border-b-4 border-[#09090B] py-16 lg:py-24">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<span class="px-2.5 py-1 bg-[#09090B] text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">РЕЕСТР СИТУАЦИЙ</span>
+<h2 class="font-['Dela_Gothic_One'] text-[32px] sm:text-[48px] uppercase tracking-tight text-[#09090B] mt-2">
+            С КАКИМ ЗАПРОСОМ МОЖНО ПРИЙТИ?
+          </h2>
+</div>
+<span class="font-label-sm text-label-sm uppercase font-bold text-[#09090B]/60">6 ОСНОВНЫХ НАПРАВЛЕНИЙ ТЕРАПИИ</span>
+</div>
+<!-- Bento Asymmetric 6 Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Direction 1: Large Featured Card (Col span 2) -->
+<div class="md:col-span-2 border-3 border-[#09090B] bg-[#F8F4E8] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between hover:shadow-[2px_2px_0px_#09090B] hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 bg-tertiary text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">#01 НАПРАВЛЕНИЕ</span>
+<span class="material-symbols-outlined text-tertiary text-[28px]">favorite</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-md uppercase text-[#09090B] mb-3">
+              ОТНОШЕНИЯ И ПОИСК ПАРТНЁРА
+            </h3>
+<p class="font-body-md text-body-md text-[#09090B]/80 max-w-xl">
+              Повторяющиеся токсичные циклы, страх близости, эмоциональная зависимость или одиночество. Разбираем, какие скрытые установки заставляют выбирать неподходящих людей или саботировать здоровые отношения.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t-2 border-[#09090B] flex flex-wrap gap-2">
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] font-label-sm text-label-sm">Сепарация</span>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] font-label-sm text-label-sm">Границы</span>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] font-label-sm text-label-sm">Доверие</span>
+</div>
+</div>
+<!-- Direction 2 -->
+<div class="border-3 border-[#09090B] bg-[#09090B] text-[#F8F4E8] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between hover:shadow-[2px_2px_0px_#09090B] hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 bg-primary-container text-[#09090B] font-label-sm text-label-sm uppercase font-bold">#02 НАПРАВЛЕНИЕ</span>
+<span class="material-symbols-outlined text-primary-container text-[28px]">psychology_alt</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#F8F4E8] mb-3">
+              САМОРЕАЛИЗАЦИЯ И ПРИЗВАНИЕ
+            </h3>
+<p class="font-body-sm text-body-sm text-[#F8F4E8]/80">
+              «Кем я хочу быть, когда вырасту?». Выявление природных сильных сторон и снятие синдрома самозванца.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-[#F8F4E8]/20 flex flex-wrap gap-2">
+<span class="px-2 py-0.5 border border-[#F8F4E8]/40 bg-[#1c1b1d] text-[#F8F4E8] font-label-sm text-label-sm">Смысл</span>
+<span class="px-2 py-0.5 border border-[#F8F4E8]/40 bg-[#1c1b1d] text-[#F8F4E8] font-label-sm text-label-sm">Профессия</span>
+</div>
+</div>
+<!-- Direction 3 -->
+<div class="border-3 border-[#09090B] bg-primary-container text-[#09090B] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between hover:shadow-[2px_2px_0px_#09090B] hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 bg-[#09090B] text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">#03 НАПРАВЛЕНИЕ</span>
+<span class="material-symbols-outlined text-[28px]">rocket_launch</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] mb-3">
+              ЦЕЛИ И ЛИЧНЫЕ ДОСТИЖЕНИЯ
+            </h3>
+<p class="font-body-sm text-body-sm text-[#09090B]">
+              Когда цель годами переносится в новый блокнот. Тестируем барьеры: это твоя цель или навязанный образ успеха?
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t-2 border-[#09090B] flex flex-wrap gap-2">
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#F8F4E8] font-label-sm text-label-sm">Действие</span>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#F8F4E8] font-label-sm text-label-sm">Фокус</span>
+</div>
+</div>
+<!-- Direction 4 -->
+<div class="border-3 border-[#09090B] bg-[#F8F4E8] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between hover:shadow-[2px_2px_0px_#09090B] hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 bg-[#09090B] text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">#04 НАПРАВЛЕНИЕ</span>
+<span class="material-symbols-outlined text-[28px]">balance</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] mb-3">
+              ВНУТРЕННИЕ КОНФЛИКТЫ И ОБИДЫ
+            </h3>
+<p class="font-body-sm text-body-sm text-[#09090B]/80">
+              Груз детских травм, застарелых обид на родителей или бывших партнеров. Экологичный сброс балласта без боли.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t-2 border-[#09090B] flex flex-wrap gap-2">
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] font-label-sm text-label-sm">Прощение</span>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] font-label-sm text-label-sm">Облегчение</span>
+</div>
+</div>
+<!-- Direction 5 & 6 (Combined Span) -->
+<div class="border-3 border-[#09090B] bg-[#F8F4E8] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between hover:shadow-[2px_2px_0px_#09090B] hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2.5 py-1 bg-secondary text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">#05 &amp; #06 БИЗНЕС И РЕСУРСЫ</span>
+<span class="material-symbols-outlined text-secondary text-[28px]">insights</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B] mb-3">
+              ЭНЕРГИЯ, ПРОЕКТЫ, СТАРТАПЫ
+            </h3>
+<p class="font-body-sm text-body-sm text-[#09090B]/80">
+              Поиск точек роста в коммерческих проектах, преодоление денежных потолков и выход из состояния хронического выгорания.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t-2 border-[#09090B] flex flex-wrap gap-2">
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] font-label-sm text-label-sm">Масштаб</span>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] font-label-sm text-label-sm">Идеи</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: WHAT CAN YOU TAKE AWAY? (TRANSFORMATION RESULTS) -->
+<section class="w-full bg-[#F8F4E8] border-b-4 border-[#09090B] py-16 lg:py-24">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+<div class="lg:col-span-6">
+<span class="px-3 py-1 bg-primary-container border-2 border-[#09090B] shadow-[2px_2px_0px_#09090B] font-label-sm text-label-sm font-bold uppercase tracking-wider text-[#09090B]">
+            ВЫХОДНЫЕ АРТЕФАКТЫ
+          </span>
+<h2 class="font-['Dela_Gothic_One'] text-[34px] sm:text-[50px] uppercase tracking-tight text-[#09090B] mt-4 leading-tight">
+            ЧТО МОЖНО ЗАБРАТЬ С СОБОЙ?
+          </h2>
+</div>
+<div class="lg:col-span-6">
+<p class="font-body-lg text-body-lg text-[#09090B]/80 pt-2">
+            Никаких эзотерических обещаний вроде «деньги упадут с неба». Только чистая психологическая ясность, снятие внутреннего напряжения и готовый чек-лист действий.
+          </p>
+</div>
+</div>
+<!-- 5 Solid Results Rows / High contrast blocks -->
+<div class="space-y-4">
+<div class="border-3 border-[#09090B] bg-[#ECE7D5] p-6 shadow-[4px_4px_0px_#09090B] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 bg-[#09090B] text-primary-container font-['Dela_Gothic_One'] text-headline-sm flex items-center justify-center shrink-0">01</span>
+<div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]">Ясная голова и снятие противоречий</h3>
+<p class="font-body-sm text-body-sm text-[#09090B]/80 mt-1">Решим все противоречия, хаос в голове и застарелые внутренние конфликты. Всё встанет по полочкам.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-[#F8F4E8] border border-[#09090B] font-label-sm text-label-sm uppercase font-bold text-[#09090B] shrink-0">ФОКУС ВНИМАНИЯ</span>
+</div>
+<div class="border-3 border-[#09090B] bg-primary-container p-6 shadow-[4px_4px_0px_#09090B] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 bg-[#09090B] text-[#F8F4E8] font-['Dela_Gothic_One'] text-headline-sm flex items-center justify-center shrink-0">02</span>
+<div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]">Чёткое видение своего пути</h3>
+<p class="font-body-sm text-body-sm text-[#09090B] font-medium mt-1">Включим внутренний свет на пути к цели. Проложим метафорический маршрут, чтобы в реале не плутать.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-[#09090B] text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold shrink-0">КАРТА МАРШРУТА</span>
+</div>
+<div class="border-3 border-[#09090B] bg-[#ECE7D5] p-6 shadow-[4px_4px_0px_#09090B] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 bg-[#09090B] text-primary-container font-['Dela_Gothic_One'] text-headline-sm flex items-center justify-center shrink-0">03</span>
+<div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]">Эффективное решение без шишек</h3>
+<p class="font-body-sm text-body-sm text-[#09090B]/80 mt-1">Протестируем разные стратегии и выберем самую рабочую за 3 часа вместо месяцев проб и ошибок.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-[#F8F4E8] border border-[#09090B] font-label-sm text-label-sm uppercase font-bold text-[#09090B] shrink-0">ЭКОНОМИЯ ЛЕТ ЖИЗНИ</span>
+</div>
+<div class="border-3 border-[#09090B] bg-[#ECE7D5] p-6 shadow-[4px_4px_0px_#09090B] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 bg-[#09090B] text-primary-container font-['Dela_Gothic_One'] text-headline-sm flex items-center justify-center shrink-0">04</span>
+<div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]">Бережная трансформация без сопротивления</h3>
+<p class="font-body-sm text-body-sm text-[#09090B]/80 mt-1">Экологичные методики арт-терапии, которые не наносят травм. Легко обходим внутренний саботаж.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-[#F8F4E8] border border-[#09090B] font-label-sm text-label-sm uppercase font-bold text-[#09090B] shrink-0">БЕЗОПАСНОСТЬ</span>
+</div>
+<div class="border-3 border-[#09090B] bg-[#ECE7D5] p-6 shadow-[4px_4px_0px_#09090B] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 bg-[#09090B] text-primary-container font-['Dela_Gothic_One'] text-headline-sm flex items-center justify-center shrink-0">05</span>
+<div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]">Расширение стратегий для действия</h3>
+<p class="font-body-sm text-body-sm text-[#09090B]/80 mt-1">Увидишь «как можно еще». Ведущий и поле игры подсвечивают альтернативы, скрытые за шорами прошлого опыта.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-[#F8F4E8] border border-[#09090B] font-label-sm text-label-sm uppercase font-bold text-[#09090B] shrink-0">СВЕЖИЙ ВЗГЛЯД</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 7: PRICING & FORMATS (ВЫБЕРИ СВОЙ ФОРМАТ) -->
+<section class="w-full bg-[#ECE7D5] border-b-4 border-[#09090B] py-16 lg:py-24" id="formats">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="px-3 py-1 bg-[#09090B] text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">ОФИЦИАЛЬНЫЙ ПРАЙС</span>
+<h2 class="font-['Dela_Gothic_One'] text-[34px] sm:text-[52px] uppercase tracking-tight text-[#09090B] mt-3">
+          ТАРИФЫ И ЦЕНЫ
+        </h2>
+<p class="font-body-md text-body-md text-[#09090B]/70 mt-2">
+          Выберите формат погружения. Оплата защищена LeadPay с моментальной фиксацией бронирования.
+        </p>
+</div>
+<!-- 3 Sculptural Neo-Brutalist Cards -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+<!-- CARD 1: GROUP GAME -->
+<div class="border-3 border-[#09090B] bg-[#F8F4E8] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between hover:-translate-y-1 transition-all">
+<div>
+<div class="flex justify-between items-center border-b-2 border-[#09090B] pb-4 mb-6">
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-wider text-[#09090B]">ТАРИФ // ГРУППА</span>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#ECE7D5] text-[10px] font-bold uppercase">3–5 ЧЕЛОВЕК</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-md uppercase text-[#09090B] mb-2">
+              ГРУППОВАЯ ИГРА
+            </h3>
+<p class="font-body-sm text-body-sm text-[#09090B]/70 mb-6">
+              Идеальный старт: взаимная подсветка запросов в камерной доверительной атмосфере.
+            </p>
+<div class="font-['Dela_Gothic_One'] text-[38px] text-[#09090B] tracking-tight mb-8">
+              4 990 ₽
+            </div>
+<ul class="space-y-3 font-body-sm text-body-sm text-[#09090B]">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span>Участие в групповой игре на 3–5 человек</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span>Составление индивидуального плана развития или выхода из сложной ситуации</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span>Доступ в закрытый чат участников</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span>Сессии психотерапии в структуре игры</span>
+</li>
+</ul>
+</div>
+<div class="mt-8 pt-6 border-t-2 border-[#09090B]">
+<a class="w-full inline-flex items-center justify-center px-6 py-4 bg-[#F8F4E8] text-[#09090B] border-2 border-[#09090B] font-label-md text-label-md uppercase font-bold tracking-wider shadow-[3px_3px_0px_#09090B] hover:bg-secondary hover:text-[#F8F4E8] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" href="https://app.leadpay.ru/checkout/1737/" target="_blank">
+              ЗАНЯТЬ МЕСТО [ 4 990 ₽ ]
+            </a>
+</div>
+</div>
+<!-- CARD 2: INDIVIDUAL GAME (FLAGSHIP ACID) -->
+<div class="border-4 border-[#09090B] bg-primary-container p-8 shadow-[8px_8px_0px_#09090B] flex flex-col justify-between relative hover:-translate-y-2 transition-all lg:-mt-4">
+<!-- Sticker Badge -->
+<div class="absolute -top-4 right-4 px-3 py-1 bg-[#09090B] text-primary-container border-2 border-[#09090B] font-label-sm text-label-sm font-bold uppercase tracking-widest rotate-2 shadow-[2px_2px_0px_#F8F4E8]">
+            ★ ВЫБОР 80% КЛИЕНТОВ
+          </div>
+<div>
+<div class="flex flex-wrap justify-between items-center gap-2 border-b-2 border-[#09090B] pb-4 mb-6">
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-wider text-[#09090B]">ТАРИФ // ОНЛАЙН</span>
+<span class="px-2 py-0.5 border border-[#09090B] bg-[#09090B] text-primary-container text-[10px] font-bold uppercase">ПЕРСОНАЛЬНО</span>
+</div>
+<div class="w-full min-w-0" style="container-type:inline-size">
+              <h3 class="font-['Dela_Gothic_One'] text-headline-md uppercase text-[#09090B] mb-2 leading-none">
+                <span class="relative block h-[1em] w-full">
+                  <span class="absolute left-0 top-0 origin-left whitespace-nowrap" style="transform:scaleX(min(1, calc(100cqw / 349px)))">ИНДИВИДУАЛЬНАЯ</span>
+                </span>
+                ИГРА
+              </h3>
+            </div>
+<p class="font-body-sm text-body-sm text-[#09090B]/90 font-medium mb-6">
+              Глубочайшая персональная проработка с сопровождением психолога в твоем ритме.
+            </p>
+<div class="font-['Dela_Gothic_One'] text-[42px] text-[#09090B] tracking-tight mb-8">
+              7 990 ₽
+            </div>
+<ul class="space-y-3 font-body-sm text-body-sm text-[#09090B]">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span><strong>Индивидуальное прохождение</strong> в закрытом чате с практикующим психологом</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span><strong>До 2-х месяцев</strong> возможно проходить задания в удобном темпе и режиме</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span><strong>Больше инсайтов в 2 раза</strong> за счет персонального фокуса на деталях</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#09090B] font-bold shrink-0">check_circle</span>
+<span>Составление индивидуального плана развития или выхода из ситуации</span>
+</li>
+</ul>
+</div>
+<div class="mt-8 pt-6 border-t-2 border-[#09090B]">
+<a class="w-full inline-flex items-center justify-center px-6 py-4 bg-[#09090B] text-[#F8F4E8] border-2 border-[#09090B] font-label-md text-label-md uppercase font-bold tracking-wider shadow-[4px_4px_0px_#F8F4E8] hover:bg-[#1c1b1d] hover:text-primary-container active:translate-x-[2px] active:translate-y-[2px] transition-all" href="https://app.leadpay.ru/checkout/1817/" target="_blank">
+              НАЧАТЬ ОНЛАЙН [ 7 990 ₽ ]
+            </a>
+</div>
+</div>
+<!-- CARD 3: VIP PASS -->
+<div class="border-3 border-[#09090B] bg-[#09090B] text-[#F8F4E8] p-8 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between hover:-translate-y-1 transition-all">
+<div>
+<div class="flex justify-between items-center border-b border-[#F8F4E8]/20 pb-4 mb-6">
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-wider text-primary-container">ТАРИФ // VIP МЕНТОРСТВО</span>
+<span class="px-2 py-0.5 bg-tertiary text-[#F8F4E8] text-[10px] font-bold uppercase">ЭКОНОМИЯ 12 000 ₽</span>
+</div>
+<h3 class="font-['Dela_Gothic_One'] text-headline-md uppercase text-[#F8F4E8] mb-2">
+              VIP АБОНЕМЕНТ
+            </h3>
+<p class="font-body-sm text-body-sm text-[#F8F4E8]/70 mb-6">
+              Комплексное переформатирование жизни: 2 игры + месяц терапевтической поддержки.
+            </p>
+<div class="font-['Dela_Gothic_One'] text-[38px] text-primary-container tracking-tight mb-8">
+              14 990 ₽
+            </div>
+<ul class="space-y-3 font-body-sm text-body-sm text-[#F8F4E8]">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container font-bold shrink-0">check_circle</span>
+<span><strong>Участие в 2-х играх на выбор</strong> с практикующим психологом</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container font-bold shrink-0">check_circle</span>
+<span><strong>3 сессии поддерживающей психотерапии</strong> в течение месяца</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container font-bold shrink-0">check_circle</span>
+<span>Доступ в закрытый VIP чат с постоянной обратной связью</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container font-bold shrink-0">check_circle</span>
+<span>Индивидуальный пошаговый план выхода из кризиса</span>
+</li>
+</ul>
+</div>
+<div class="mt-8 pt-6 border-t border-[#F8F4E8]/20">
+<a class="w-full inline-flex items-center justify-center px-6 py-4 bg-primary-container text-[#09090B] border-2 border-[#09090B] font-label-md text-label-md uppercase font-bold tracking-wider shadow-[3px_3px_0px_#F8F4E8] hover:bg-[#F8F4E8] active:translate-x-[2px] active:translate-y-[2px] transition-all" href="https://app.leadpay.ru/checkout/1817/" target="_blank">
+              ОФОРМИТЬ VIP [ 14 990 ₽ ]
+            </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 8: ABOUT AUTHOR (АННА ОРЛОВА) -->
+<section class="w-full bg-[#F8F4E8] border-b-4 border-[#09090B] py-16 lg:py-24" id="about">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+<!-- Left 5 cols: Portrait Card & Neo-Brutalist Frame -->
+<div class="lg:col-span-5 relative">
+<div class="border-4 border-[#09090B] bg-[#ECE7D5] p-3 shadow-[8px_8px_0px_#09090B]">
+<div class="relative overflow-hidden border-2 border-[#09090B] aspect-[4/5] bg-[#09090B]">
+<img class="w-full h-full object-cover object-top" alt="Анна Орлова — психолог и арт-терапевт" src="assets/anna-orlova.png"/>
+<!-- Tactile Watermark Badge -->
+<div class="absolute bottom-3 left-3 bg-[#09090B] text-[#F8F4E8] px-3 py-1 font-label-sm text-label-sm uppercase tracking-widest border border-primary-container">
+                АННА ОРЛОВА // PSYCHOLOGIST
+              </div>
+</div>
+<div class="mt-3 flex items-center justify-between text-label-sm font-label-sm uppercase font-bold text-[#09090B]">
+<span>ID: AO-7729-PSY</span>
+<span>АРТ-ТЕРАПИЯ &amp; ИГРЫ</span>
+</div>
+</div>
+</div>
+<!-- Right 7 cols: Story & Manifesto -->
+<div class="lg:col-span-7 space-y-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-container border-2 border-[#09090B] shadow-[2px_2px_0px_#09090B]">
+<span class="font-label-sm text-label-sm uppercase font-bold text-[#09090B]">ЗА ИГРОЙ СТОИТ ЧЕЛОВЕК</span>
+</div>
+<h2 class="font-['Dela_Gothic_One'] text-[34px] sm:text-[46px] uppercase tracking-tight text-[#09090B] leading-tight">
+            «ЗДРАВСТВУЙТЕ. МЕНЯ ЗОВУТ АННА ОРЛОВА»
+          </h2>
+<div class="space-y-4 font-body-md text-body-md text-[#09090B]/85">
+<p class="font-body-lg text-body-lg font-medium text-[#09090B]">
+              За каждой трансформацией стоит человек, который умеет задавать правильные вопросы.
+            </p>
+<p>
+              Я практикующий психолог, арт-терапевт. Помогла <strong>350+ своим клиентам</strong> улучшить отношения, добиться своих целей и повысить качество жизни с помощью психологических игр и бережной терапии.
+            </p>
+<p>
+              В своей практике я использую наиболее эффективные и проверенные методики и игры, созданные большой командой профессионалов. Я полностью убеждена, что качественные изменения — это необходимость каждого человека, стремящегося к саморазвитию и самореализации.
+            </p>
+<p class="border-l-3 border-[#09090B] pl-4 font-bold text-[#09090B]">
+              «Со мной эти изменения проходят экологично, но при этом максимально эффективно и безболезненно».
+            </p>
+</div>
+<!-- Highlight Metrics Box -->
+<div class="grid grid-cols-3 gap-4 pt-4 border-t-2 border-[#09090B]">
+<div class="border-2 border-[#09090B] bg-[#ECE7D5] p-4 text-center shadow-[3px_3px_0px_#09090B]">
+<span class="font-['Dela_Gothic_One'] text-headline-sm text-[#09090B] block" data-count="350" data-suffix="+">0+</span>
+<span class="font-label-sm text-label-sm uppercase text-[#09090B]/70 block mt-1">Клиентов</span>
+</div>
+<div class="border-2 border-[#09090B] bg-primary-container p-4 text-center shadow-[3px_3px_0px_#09090B]">
+<span class="font-['Dela_Gothic_One'] text-headline-sm text-[#09090B] block" data-count="7" data-suffix=" ЛЕТ">0 ЛЕТ</span>
+<span class="font-label-sm text-label-sm uppercase text-[#09090B] font-bold block mt-1">Практики</span>
+</div>
+<div class="border-2 border-[#09090B] bg-[#ECE7D5] p-4 text-center shadow-[3px_3px_0px_#09090B]">
+<span class="font-['Dela_Gothic_One'] text-headline-sm text-[#09090B] block" data-count="100" data-suffix="%">0%</span>
+<span class="font-label-sm text-label-sm uppercase text-[#09090B]/70 block mt-1">Экологично</span>
+</div>
+</div>
+<!-- Direct Messenger Contact Buttons -->
+<div class="pt-2 flex flex-wrap items-center gap-4">
+<a class="inline-flex items-center gap-2 px-5 py-3 bg-[#09090B] text-[#F8F4E8] font-label-md text-label-md uppercase tracking-wider font-bold border-2 border-[#09090B] shadow-[3px_3px_0px_#D2E823] hover:bg-secondary transition-all" href="https://wa.me/79221023802" target="_blank">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+              НАПИСАТЬ В WHATSAPP
+            </a>
+<a class="inline-flex items-center gap-2 px-5 py-3 bg-[#F8F4E8] text-[#09090B] font-label-md text-label-md uppercase tracking-wider font-bold border-2 border-[#09090B] shadow-[3px_3px_0px_#09090B] hover:bg-primary-container transition-all" href="https://t.me/psygamesclub" target="_blank">
+<span class="material-symbols-outlined text-[18px]">send</span>
+              TELEGRAM КАНАЛ
+            </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 9: REVIEWS & EVIDENCE (ЭТО ИХ ОПЫТ. А ТВОЙ — ВПЕРЕДИ) -->
+<section class="w-full bg-[#ECE7D5] border-b-4 border-[#09090B] py-16 lg:py-24 overflow-visible" id="reviews">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<span class="px-2.5 py-1 bg-primary-container border border-[#09090B] font-label-sm text-label-sm uppercase font-bold text-[#09090B]">
+            ОПЫТ УЧАСТНИКОВ
+          </span>
+<h2 class="font-['Dela_Gothic_One'] text-[32px] sm:text-[48px] uppercase tracking-tight text-[#09090B] mt-2">
+            ЭТО ИХ ОПЫТ. А ТВОЙ — ВПЕРЕДИ
+          </h2>
+</div>
+<span class="font-label-sm text-label-sm uppercase font-bold text-[#09090B]/55">3 ПРОВЕРЕННЫХ КЕЙСА</span>
+</div>
+<!-- Full-width grid — nothing clipped on the right -->
+<div class="reviews-track" id="reviews-carousel">
+<!-- Review 1 -->
+<article class="review-card border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex flex-wrap justify-between items-center gap-2 border-b border-[#09090B]/20 pb-3">
+<span class="font-bold text-[#09090B]">Екатерина В., 32 года</span>
+<span class="text-label-sm font-label-sm bg-primary-container px-2 py-0.5 border border-[#09090B]">ИНДИВИДУАЛЬНО</span>
+</div>
+<p class="font-body-md text-body-md text-[#09090B]">
+              «Пришла с ощущением полной каши в голове: менять работу или нет, куда двигаться? За 3 часа игры Анна вытащила наружу то, что я боялась признать себе 2 года. Ушла не с абстрактной мотивацией, а с конкретным планом увольнения и запуска проекта. Сейчас уже работаю на себя!»
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-[#09090B]/20 flex flex-wrap items-center justify-between gap-2 text-label-sm font-label-sm uppercase text-[#09090B]/60">
+<span>ЗАПРОС: САМОРЕАЛИЗАЦИЯ</span>
+<span>★ ПРОВЕРЕННЫЙ ОТЗЫВ</span>
+</div>
+</article>
+<!-- Review 2 -->
+<article class="review-card border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex flex-wrap justify-between items-center gap-2 border-b border-[#09090B]/20 pb-3">
+<span class="font-bold text-[#09090B]">Михаил С., 39 лет</span>
+<span class="text-label-sm font-label-sm bg-[#09090B] text-[#F8F4E8] px-2 py-0.5">ГРУППОВАЯ ИГРА</span>
+</div>
+<p class="font-body-md text-body-md text-[#09090B]">
+              «Скептически относился ко всем "играм", думал, женские посиделки с картами. Но формат взорвал мозг. Без эзотерики, четкая логика и зеркало твоих поведенческих тупиков. Увидел, как я сам саботировал партнерские переговоры из-за недоверия. Рекомендую предпринимателям».
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-[#09090B]/20 flex flex-wrap items-center justify-between gap-2 text-label-sm font-label-sm uppercase text-[#09090B]/60">
+<span>ЗАПРОС: БИЗНЕС-БАРЬЕРЫ</span>
+<span>★ ПРОВЕРЕННЫЙ ОТЗЫВ</span>
+</div>
+</article>
+<!-- Review 3 -->
+<article class="review-card border-3 border-[#09090B] bg-[#F8F4E8] p-6 shadow-[6px_6px_0px_#09090B] flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex flex-wrap justify-between items-center gap-2 border-b border-[#09090B]/20 pb-3">
+<span class="font-bold text-[#09090B]">Алёна К., 28 лет</span>
+<span class="text-label-sm font-label-sm bg-primary-container px-2 py-0.5 border border-[#09090B]">VIP ТАРИФ</span>
+</div>
+<p class="font-body-md text-body-md text-[#09090B]">
+              «Очень боялась расковырять старые раны после болезненного разрыва. Анна невероятно деликатна. Никакого давления, абсолютная безопасность. Прошла 2 игры и месячную терапию — наконец-то отпустило чувство вины, вернулся аппетит к жизни и нормальный сон».
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-[#09090B]/20 flex flex-wrap items-center justify-between gap-2 text-label-sm font-label-sm uppercase text-[#09090B]/60">
+<span>ЗАПРОС: ОТНОШЕНИЯ &amp; ОБИДА</span>
+<span>★ ПРОВЕРЕННЫЙ ОТЗЫВ</span>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- SECTION 10: FAQ ACCORDION (ЕСТЬ ВОПРОСЫ?) -->
+<section class="w-full bg-[#F8F4E8] border-b-4 border-[#09090B] py-16 lg:py-24" id="faq">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-12">
+<span class="px-3 py-1 bg-secondary text-[#F8F4E8] font-label-sm text-label-sm uppercase font-bold">СПРАВОЧНИК</span>
+<h2 class="font-['Dela_Gothic_One'] text-[34px] sm:text-[48px] uppercase tracking-tight text-[#09090B] mt-3">
+          ЕСТЬ ВОПРОСЫ?
+        </h2>
+<p class="font-body-md text-body-md text-[#09090B]/70 mt-2">
+          Всё, что нужно знать перед тем, как занять место за игровым полем.
+        </p>
+</div>
+<!-- Accordion Items (7 items) -->
+<div class="space-y-4">
+<!-- Q1 -->
+<div class="faq-item border-3 border-[#09090B] bg-[#ECE7D5] shadow-[4px_4px_0px_#09090B] transition-all">
+<button class="w-full p-6 text-left flex items-center justify-between gap-4 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" onclick="toggleFaq(this)">
+<span>1. Что такое трансформационная игра?</span>
+<span class="faq-icon w-8 h-8 rounded-none border-2 border-[#09090B] bg-[#F8F4E8] flex items-center justify-center text-headline-sm shrink-0">+</span>
+</button>
+<div class="faq-content hidden px-6 pb-6 pt-2 font-body-md text-body-md text-[#09090B]/85 border-t border-[#09090B]/20">
+            Это психологическая практика в настольном или интерактивном онлайн-формате. Игра выступает безопасной моделью реальной жизни. За счет игровых метафор и механик мы минуем барьеры логического ума и находим реальные корни проблемы без многомесячных разговоров.
+          </div>
+</div>
+<!-- Q2 -->
+<div class="faq-item border-3 border-[#09090B] bg-[#ECE7D5] shadow-[4px_4px_0px_#09090B] transition-all">
+<button class="w-full p-6 text-left flex items-center justify-between gap-4 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" onclick="toggleFaq(this)">
+<span>2. Нужно ли иметь психологический опыт?</span>
+<span class="faq-icon w-8 h-8 rounded-none border-2 border-[#09090B] bg-[#F8F4E8] flex items-center justify-center text-headline-sm shrink-0">+</span>
+</button>
+<div class="faq-content hidden px-6 pb-6 pt-2 font-body-md text-body-md text-[#09090B]/85 border-t border-[#09090B]/20">
+            Нет, никакой подготовки не требуется. Ведущая бережно проведет вас через каждый этап, объяснит все правила и поможет сформулировать запрос прямо на старте.
+          </div>
+</div>
+<!-- Q3 -->
+<div class="faq-item border-3 border-[#09090B] bg-[#ECE7D5] shadow-[4px_4px_0px_#09090B] transition-all">
+<button class="w-full p-6 text-left flex items-center justify-between gap-4 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" onclick="toggleFaq(this)">
+<span>3. Можно ли участвовать онлайн?</span>
+<span class="faq-icon w-8 h-8 rounded-none border-2 border-[#09090B] bg-[#F8F4E8] flex items-center justify-center text-headline-sm shrink-0">+</span>
+</button>
+<div class="faq-content hidden px-6 pb-6 pt-2 font-body-md text-body-md text-[#09090B]/85 border-t border-[#09090B]/20">
+            Да! Индивидуальный тариф полностью оптимизирован под онлайн в закрытом чате с возможностью проходить задания в удобном темпе на протяжении до 2-х месяцев. Групповые форматы также регулярно проводятся по видеосвязи.
+          </div>
+</div>
+<!-- Q4 -->
+<div class="faq-item border-3 border-[#09090B] bg-[#ECE7D5] shadow-[4px_4px_0px_#09090B] transition-all">
+<button class="w-full p-6 text-left flex items-center justify-between gap-4 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" onclick="toggleFaq(this)">
+<span>4. Как проходит групповая игра?</span>
+<span class="faq-icon w-8 h-8 rounded-none border-2 border-[#09090B] bg-[#F8F4E8] flex items-center justify-center text-headline-sm shrink-0">+</span>
+</button>
+<div class="faq-content hidden px-6 pb-6 pt-2 font-body-md text-body-md text-[#09090B]/85 border-t border-[#09090B]/20">
+            Камерная группа до 3–5 человек. У каждого участника свой индивидуальный запрос. За счет эффекта группового поля ходы других людей очень часто подсвечивают ваши собственные слепые зоны.
+          </div>
+</div>
+<!-- Q5 -->
+<div class="faq-item border-3 border-[#09090B] bg-[#ECE7D5] shadow-[4px_4px_0px_#09090B] transition-all">
+<button class="w-full p-6 text-left flex items-center justify-between gap-4 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" onclick="toggleFaq(this)">
+<span>5. Чем отличается индивидуальный формат?</span>
+<span class="faq-icon w-8 h-8 rounded-none border-2 border-[#09090B] bg-[#F8F4E8] flex items-center justify-center text-headline-sm shrink-0">+</span>
+</button>
+<div class="faq-content hidden px-6 pb-6 pt-2 font-body-md text-body-md text-[#09090B]/85 border-t border-[#09090B]/20">
+            100% внимания психолога принадлежит только вам. Вы не привязаны к графику других людей, можете делать паузы, осмыслять инсайты и получать вдвое больше персональной обратной связи.
+          </div>
+</div>
+<!-- Q6 -->
+<div class="faq-item border-3 border-[#09090B] bg-[#ECE7D5] shadow-[4px_4px_0px_#09090B] transition-all">
+<button class="w-full p-6 text-left flex items-center justify-between gap-4 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" onclick="toggleFaq(this)">
+<span>6. Сколько длится игра?</span>
+<span class="faq-icon w-8 h-8 rounded-none border-2 border-[#09090B] bg-[#F8F4E8] flex items-center justify-center text-headline-sm shrink-0">+</span>
+</button>
+<div class="faq-content hidden px-6 pb-6 pt-2 font-body-md text-body-md text-[#09090B]/85 border-t border-[#09090B]/20">
+            Стандартная живая или синхронная сессия длится около 3-х часов. Это оптимальное время, за которое психика успевает погрузиться в контекст, прожить опыт и выйти с готовыми выводами без перегрузки.
+          </div>
+</div>
+<!-- Q7 -->
+<div class="faq-item border-3 border-[#09090B] bg-[#ECE7D5] shadow-[4px_4px_0px_#09090B] transition-all">
+<button class="w-full p-6 text-left flex items-center justify-between gap-4 font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#09090B]" onclick="toggleFaq(this)">
+<span>7. С каким запросом можно прийти?</span>
+<span class="faq-icon w-8 h-8 rounded-none border-2 border-[#09090B] bg-[#F8F4E8] flex items-center justify-center text-headline-sm shrink-0">+</span>
+</button>
+<div class="faq-content hidden px-6 pb-6 pt-2 font-body-md text-body-md text-[#09090B]/85 border-t border-[#09090B]/20">
+            С абсолютно любым: от «не знаю, чего хочу» и «хочу простить обиду» до масштабирования бизнеса и поиска второй половины. Если вы сомневаетесь — напишите нам в WhatsApp, мы поможем выбрать подходящую механику.
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 11: FINAL HIGH-VOLTAGE CTA -->
+<section class="w-full bg-primary-container border-b-4 border-[#09090B] py-16 lg:py-24 relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="border-4 border-[#09090B] bg-[#F8F4E8] p-8 lg:p-16 shadow-[10px_10px_0px_#09090B] relative">
+<div class="max-w-3xl space-y-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-[#09090B] text-primary-container font-label-sm text-label-sm uppercase font-bold">
+            ФИНАЛЬНЫЙ ШАГ
+          </div>
+<h2 class="font-['Dela_Gothic_One'] text-[36px] sm:text-[56px] lg:text-[70px] uppercase tracking-tight text-[#09090B] leading-[0.95]">
+            ТВОЙ СЛЕДУЮЩИЙ ХОД — ЗА ТОБОЙ.
+          </h2>
+<p class="font-body-lg text-body-lg text-[#09090B]/90 font-medium max-w-xl">
+            Не обязательно знать все ответы наперед. Иногда достаточно просто решиться посмотреть на свою ситуацию иначе и сделать первый ход.
+          </p>
+<!-- Direct Actions Group -->
+<div class="pt-4 flex flex-wrap items-center gap-4 sm:gap-6">
+<a class="inline-flex items-center justify-center px-8 py-4 bg-primary-container text-[#09090B] border-3 border-[#09090B] font-label-lg text-label-lg uppercase tracking-wider font-bold shadow-[4px_4px_0px_#09090B] hover:shadow-[6px_6px_0px_#09090B] hover:-translate-x-1 hover:-translate-y-1 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" href="https://app.leadpay.ru/checkout/1817/" target="_blank">
+              ВЫБРАТЬ ИГРУ И НАЧАТЬ
+              <span class="material-symbols-outlined ml-2 font-bold">arrow_forward</span>
+</a>
+<a class="inline-flex items-center justify-center px-7 py-4 bg-[#ECE7D5] text-[#09090B] border-2 border-[#09090B] font-label-lg text-label-lg uppercase tracking-wider font-bold shadow-[3px_3px_0px_#09090B] hover:bg-[#09090B] hover:text-[#F8F4E8] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all" href="https://wa.me/79221023802" target="_blank">
+              WHATSAPP: +7 922 102-38-02
+            </a>
+</div>
+<div class="pt-6 border-t-2 border-[#09090B]/20 flex flex-wrap items-center gap-6 font-label-sm text-label-sm uppercase tracking-wider text-[#09090B]/70">
+<a class="hover:text-secondary flex items-center gap-1 font-bold" href="https://t.me/psygamesclub" target="_blank">
+<span>TELEGRAM: @PSYGAMESCLUB</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+<span class="text-[#09090B]/30">•</span>
+<span>КОНФИДЕНЦИАЛЬНОСТЬ 100%</span>
+<span class="text-[#09090B]/30">•</span>
+<span>LEADPAY ЗАЩИЩЕННЫЕ ПЛАТЕЖИ</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Logic Scripts -->
+<script>
+    // Diagnostics Selector State
+    const queryData = [
+      {
+        tag: "РЕКОМЕНДАЦИЯ: ИГРА «ОТНОШЕНИЯ И БЛИЗОСТЬ»",
+        title: "Похоже, сейчас важно перестроить сценарий в паре или отпустить прошлый опыт",
+        desc: "За 3 часа мы распакуем, какие неосознанные ожидания или страхи создают барьеры между вами и желанной близостью. Индивидуальный или групповой разбор.",
+        link: "https://app.leadpay.ru/checkout/1817/"
+      },
+      {
+        tag: "РЕКОМЕНДАЦИЯ: ИГРА «ТОЧКА ПРИЗВАНИЯ»",
+        title: "Твой фокус — найти истинную точку приложения силы и отбросить чужие роли",
+        desc: "Мы отсечем синдром самозванца и протестируем новые гипотезы карьеры в безопасной среде. Ты увидишь свои реальные таланты без критики.",
+        link: "https://app.leadpay.ru/checkout/1817/"
+      },
+      {
+        tag: "РЕКОМЕНДАЦИЯ: ИГРА «СТРАТЕГИЯ ДОСТИЖЕНИЙ»",
+        title: "Пора преодолеть прокрастинацию и нащупать первый легкий шаг",
+        desc: "Проверим, почему цель буксует: сопротивление психики или просто неверно выбранный маршрут. Составим карту действий уже в игре.",
+        link: "https://app.leadpay.ru/checkout/1737/"
+      },
+      {
+        tag: "РЕКОМЕНДАЦИЯ: ИГРА «ОСВОБОЖДЕНИЕ»",
+        title: "Необходимо мягко сбросить груз обид и завершить старые диалоги",
+        desc: "Бережная терапия без боли. Закрываем гештальты, возвращаем ресурс и эмоциональную автономию.",
+        link: "https://app.leadpay.ru/checkout/1817/"
+      },
+      {
+        tag: "РЕКОМЕНДАЦИЯ: ИГРА «ИСТОЧНИК ЭНЕРГИИ»",
+        title: "Приоритет номер один — остановить утечку ресурса и выйти из выгорания",
+        desc: "В игре увидим, куда незаметно сливаются твои жизненные силы, и найдем скрытые внутренние резервуары.",
+        link: "https://app.leadpay.ru/checkout/1737/"
+      },
+      {
+        tag: "РЕКОМЕНДАЦИЯ: БИЗНЕС-ТРЕНИНГ «МАСШТАБ»",
+        title: "Поиск нестандартных ходов для бизнеса и снятие денежных потолков",
+        desc: "Бизнес-моделирование через игровую механику: новые офферы, партнерства и проверка гипотез без риска деньгами.",
+        link: "https://app.leadpay.ru/checkout/1817/"
+      },
+      {
+        tag: "РЕКОМЕНДАЦИЯ: ИГРА «ТОЧКА НОЛЬ // НАВИГАТОР»",
+        title: "Идеально: у тебя чистый лист, и мы вытащим твои истинные ориентиры",
+        desc: "Когда нет четкого запроса, игра работает лучше всего! Мы обойдем рациональный контроль и нащупаем подлинное желание сердца.",
+        link: "https://app.leadpay.ru/checkout/1817/"
+      }
+    ];
+
+    function selectRequest(index) {
+      const cards = document.querySelectorAll('.query-card');
+      cards.forEach(c => {
+        c.classList.remove('ring-4', 'ring-[#09090B]', '!bg-primary-container', 'is-picking');
+      });
+
+      const selected = document.querySelector(`[data-card-id="${index}"]`);
+      if (selected) {
+        selected.classList.add('!bg-primary-container', 'ring-4', 'ring-[#09090B]', 'is-picking');
+        selected.addEventListener('animationend', () => selected.classList.remove('is-picking'), { once: true });
+      }
+
+      const panel = document.getElementById('diagnostic-result');
+      const tag = document.getElementById('result-tag');
+      const title = document.getElementById('result-title');
+      const desc = document.getElementById('result-desc');
+      const link = document.getElementById('result-link');
+
+      if (panel && queryData[index]) {
+        tag.textContent = queryData[index].tag;
+        title.textContent = queryData[index].title;
+        desc.textContent = queryData[index].desc;
+        link.href = queryData[index].link;
+        panel.classList.remove('hidden', 'is-visible');
+        void panel.offsetWidth;
+        panel.classList.add('is-visible');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    // Stamp-in reveals + hard phase rises + metric tickers
+    (function initGameMotion() {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const mazePath = document.querySelector('.maze-path');
+      if (mazePath && typeof mazePath.getTotalLength === 'function') {
+        const len = mazePath.getTotalLength();
+        mazePath.style.strokeDasharray = String(len);
+        mazePath.style.strokeDashoffset = reduce ? '0' : String(len);
+        if (!reduce) {
+          void mazePath.getBoundingClientRect();
+          mazePath.classList.add('is-drawing');
+        }
+      }
+
+      const reveal = (els, cls) => {
+        if (reduce) {
+          els.forEach((el) => el.classList.add(cls));
+          return;
+        }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add(cls);
+            io.unobserve(entry.target);
+          });
+        }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+        els.forEach((el) => io.observe(el));
+      };
+
+      reveal(document.querySelectorAll('.reveal-stamp'), 'is-in');
+      reveal(document.querySelectorAll('.phase-card'), 'is-in');
+
+      const counters = document.querySelectorAll('[data-count]');
+      if (!counters.length) return;
+
+      const tick = (el) => {
+        const target = Number(el.getAttribute('data-count')) || 0;
+        const suffix = el.getAttribute('data-suffix') || '';
+        if (reduce) {
+          el.textContent = target + suffix;
+          return;
+        }
+        const start = performance.now();
+        const dur = 900;
+        const step = (now) => {
+          const t = Math.min(1, (now - start) / dur);
+          const eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+
+      const cio = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          tick(entry.target);
+          cio.unobserve(entry.target);
+        });
+      }, { threshold: 0.5 });
+      counters.forEach((el) => cio.observe(el));
+    })();
+
+    // FAQ Accordion Toggle
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const content = item.querySelector('.faq-content');
+      const icon = item.querySelector('.faq-icon');
+      const isOpen = !content.classList.contains('hidden');
+
+      // Close all
+      document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('bg-primary-container'));
+      document.querySelectorAll('.faq-icon').forEach(ic => ic.textContent = '+');
+
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        item.classList.add('bg-primary-container');
+        icon.textContent = '−';
+      }
+    }
+
+
+    function toggleMobileMenu(force) {
+      const menu = document.getElementById('mobile-menu');
+      const btn = document.getElementById('menu-toggle');
+      if (!menu) return;
+      const open = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+      menu.classList.toggle('hidden', !open);
+      menu.classList.toggle('open', open);
+      menu.classList.toggle('flex', open);
+      if (btn) btn.querySelector('.material-symbols-outlined').textContent = open ? 'close' : 'menu';
+    }
+
+    function scrollReviews() { /* reviews are a full grid now */ }
+  </script>
+</div></main><footer class="w-full bg-[#09090B] text-[#F8F4E8] border-t-4 border-[#09090B] mt-space-xl"><div class="max-w-7xl mx-auto px-space-md lg:px-space-lg pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg pb-space-xl border-b-2 border-[#1c1b1d]"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><span class="font-['Dela_Gothic_One'] text-headline-sm uppercase text-[#F8F4E8]">PSYGAME</span><span class="px-1.5 py-0.5 border border-primary-container text-primary-container font-label-sm text-label-sm">VOL.01</span></div><p class="font-body-sm text-body-sm text-[#F8F4E8]/70 max-w-sm">Пространство глубинной психологической трансформации в игровом формате. Авторские методики и сертификация.</p><div class="flex flex-col gap-space-xs mt-space-sm font-label-md text-label-md"><span class="text-primary-container uppercase tracking-wider font-bold mb-1">PROJECT</span><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#about">О проекте</a><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#formats">Форматы игр</a><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#how-it-works">Лицензии и подход</a></div></div><div class="flex flex-col gap-space-xs font-label-md text-label-md"><span class="text-primary-container uppercase tracking-wider font-bold mb-space-xs">INFORMATION</span><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#how-it-works">Как это работает</a><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#about">Об авторе (Анна Орлова)</a><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#faq">Вопросы и ответы (FAQ)</a><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#faq">Оферта и политика</a></div><div class="flex flex-col gap-space-xs font-label-md text-label-md"><span class="text-primary-container uppercase tracking-wider font-bold mb-space-xs">SOCIAL &amp; CONTACT</span><a class="inline-flex items-center gap-2 text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="https://t.me/psygamesclub" target="_blank">Telegram: t.me/psygamesclub</a><a class="inline-flex items-center gap-2 text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="tel:+79221023802">WhatsApp: +7 922 102-38-02</a><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#">Вконтакте</a><a class="text-[#F8F4E8]/80 hover:text-primary-container transition-colors" href="#">Инстаграм</a></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-[#F8F4E8]/60"><div class="flex flex-col sm:flex-row items-center gap-space-md"><span>© 2026 PSYGAME. Все права защищены.</span><span class="px-2 py-0.5 border border-[#1c1b1d] bg-[#1c1b1d] text-[#F8F4E8]/70 text-[11px] uppercase tracking-wider">Не является медицинской услугой</span></div><div class="flex items-center gap-space-sm"><span class="text-[11px] tracking-wider uppercase text-[#F8F4E8]/40">SECURE PAYMENTS:</span><span class="px-2 py-1 border border-[#F8F4E8]/20 bg-[#1c1b1d] text-primary-container font-label-sm text-label-sm font-bold tracking-widest">LEADPAY</span><span class="px-2 py-1 border border-[#F8F4E8]/20 bg-[#1c1b1d] text-[#F8F4E8] font-label-sm text-label-sm font-bold">MIR / VISA</span></div></div></div></footer></body></html>
